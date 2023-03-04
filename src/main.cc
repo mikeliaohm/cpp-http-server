@@ -71,6 +71,12 @@ main (void)
     response.SetContent (content);
     return response;
   };
+  auto json_res = [] (const HttpRequest &request) -> HttpResponse {
+    HttpResponse response (HttpStatusCode::Ok);
+    response.SetHeader ("Content-Type", "application/json");
+    response.SetContent ("{\"key\":\"success\"}");
+    return response;
+  };
 
   server.RegisterHttpRequestHandler ("/", HttpMethod::HEAD, say_hello);
   server.RegisterHttpRequestHandler ("/", HttpMethod::GET, say_hello);
@@ -78,6 +84,8 @@ main (void)
                                      send_html);
   server.RegisterHttpRequestHandler ("/hello.html", HttpMethod::GET,
                                      send_html);
+  server.RegisterHttpRequestHandler ("/json", HttpMethod::HEAD, json_res);
+  server.RegisterHttpRequestHandler ("/json", HttpMethod::GET, json_res);
 
   try
     {
