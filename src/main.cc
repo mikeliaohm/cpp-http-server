@@ -51,6 +51,8 @@ main (void)
   int port = 8080;
   HttpServer server (host, port);
 
+  int req_cnt = 0;
+
   // Register a few endpoints for demo and benchmarking
   auto say_hello = [] (const HttpRequest &request) -> HttpResponse {
     HttpResponse response (HttpStatusCode::Ok);
@@ -77,6 +79,16 @@ main (void)
     response.SetContent ("{\"key\":\"success\"}");
     return response;
   };
+  auto counter = [&req_cnt] (const HttpRequest &request) -> HttpResponse {
+    HttpResponse response (HttpStatusCode::Ok);
+    req_cnt++;
+    std::cout << "current counter: " << req_cnt << std::endl;
+    response.SetHeader ("Content-Type", "application/json");
+    response.SetHeader ("Access-Control-Allow-Origin", "*");
+    response.SetHeader ("Access-Control-Allow-Headers", "*");
+    response.SetContent ("{\"key\":" + std::to_string (req_cnt) + "}");
+    return response;
+  };
 
   server.RegisterHttpRequestHandler ("/", HttpMethod::HEAD, say_hello);
   server.RegisterHttpRequestHandler ("/", HttpMethod::GET, say_hello);
@@ -86,6 +98,7 @@ main (void)
                                      send_html);
   server.RegisterHttpRequestHandler ("/json", HttpMethod::HEAD, json_res);
   server.RegisterHttpRequestHandler ("/json", HttpMethod::GET, json_res);
+  server.RegisterHttpRequestHandler ("/counter", HttpMethod::GET, counter);
 
   try
     {
