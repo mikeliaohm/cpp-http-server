@@ -9,10 +9,13 @@
 	// "features": {},
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	// "forwardPorts": [],
+	"forwardPorts": [8080],
+
+	"appPort": [8080],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	// "postCreateCommand": "uname -a",
+	// install cmake
+	"postCreateCommand": "sudo apk update && sudo apk add cmake",
 
 	// Configure tool-specific properties.
 	"customizations": {
